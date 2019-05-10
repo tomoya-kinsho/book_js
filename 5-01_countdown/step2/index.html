@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="x-ua-compatible" content="IE=edge">
+<title>5-01_countdown</title>
+<link href="../../_common/css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<header>
+<div class="header-contents">
+<h1>カウントダウンタイマー</h1>
+<h2>1秒ごとに再計算する</h2>
+</div><!-- /.header-contents -->
+</header>
+<div class="main-wrapper">
+<section>
+	<div class="left_content">
+		<h2>ストップウォッチ</h2>
+		<p id="timer">
+			00:00:00
+		</p>
+		<button id="button_start">スタート</button>
+		<button id="button_stop">ストップ</button>
+		<button id="button_reset">リセット</button>
+	</div>
+	<!-- <div class="right_content">
+		<h2>タイマー</h2>
+		<p id="timer2"></p>
+		<button id="timer_button_start">スタート</button>
+		<button id="timer_button_stop">ストップ</button>
+		<button id="timer_button_reset">リセット</button>
+	</div> -->
+</section>
+</div><!-- /.main-wrapper -->
+<footer>JavaScript Samples</footer>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script>
+
+const start_button = document.getElementById('button_start');
+const stop_button = document.getElementById('button_stop');
+const reset_button = document.getElementById('button_reset');
+const timer_object = document.getElementById('timer');
+let start_time;
+let keika_time;
+let now_time;
+let past_keika_time= 0;
+let timer;
+
+const init_button = () => {
+	clearInterval(timer);
+	start_button.setAttribute('style', 'pointer-events: all; opacity: 1.0;');
+	stop_button.setAttribute('style', 'pointer-events: none; opacity: 0.5;');
+	reset_button.setAttribute('style', 'pointer-events: none; opacity: 0.5;');
+	timer_object.textContent = "00:00:00"
+	past_keika_time = 0;
+	now_time = 0;
+}
+
+const update_time_text = () => {
+	let min = Math.floor(keika_time / 60000);
+	let sec = Math.floor(keika_time % 60000 / 1000);
+	let msec = keika_time % 1000;
+	min = ('0' + min).slice(-2);
+	sec = ('0' + sec).slice(-2);
+	msec = ('00' + msec).slice(-3);
+	timer_object.textContent = min + ':' + sec + ':' + msec;
+}
+
+const count_up = () => {
+	// 経過時間を保持
+	timer = setInterval(() => {
+		keika_time = new Date().getTime() - start_time + past_keika_time;
+		update_time_text();
+	}, 10)
+}
+
+start_button.onclick = () => {
+	start_button.setAttribute('style', 'pointer-events: none; opacity: 0.5;');
+	stop_button.setAttribute('style', 'pointer-events: all; opacity: 1.0;');
+	reset_button.setAttribute('style', 'pointer-events: none; opacity: 0.5;');
+	start_time = new Date().getTime();
+	count_up();
+}
+
+stop_button.onclick = () => {
+	clearInterval(timer);
+	now_time = document.getElementById('timer').textContent;
+	// これまで過ぎ去った時間を保持する
+	past_keika_time = past_keika_time + new Date().getTime() - start_time;
+	start_button.setAttribute('style', 'pointer-events: all; opacity: 1.0;');
+	stop_button.setAttribute('style', 'pointer-events: none; opacity: 0.5;');
+	reset_button.setAttribute('style', 'pointer-events: all; opacity: 1.0;');
+}
+
+button_reset.onclick = () => {
+	init_button();
+}
+
+init_button();
+
+
+</script>
+</body>
+</html>
